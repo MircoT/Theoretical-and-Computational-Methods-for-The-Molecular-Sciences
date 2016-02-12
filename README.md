@@ -2,7 +2,7 @@
 Collection of exercises about Theoretical and Computational Methods for The Molecular Sciences exam.
 
 ## Contents
-Reports of each exercises are written using [jupiter](https://jupyter.org/) and are:
+Reports of each exercises are written using [jupyter](https://jupyter.org/) and are:
 
 * Report_1.ipynb
 * Report_2.ipynb
