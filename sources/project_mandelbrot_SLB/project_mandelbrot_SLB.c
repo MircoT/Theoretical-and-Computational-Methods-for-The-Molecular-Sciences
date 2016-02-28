@@ -113,11 +113,6 @@ int main (int argc, char** argv)
         fprintf(stdout, ">> An input grid is required to run this program, for example 2x3, 3x2, 2x8, 4x4, 8x2\n");
         MPI_Abort(MPI_COMM_WORLD, 3);
     }
-    else if (argc >= 2 && (argv[1][1] != 'x' || strlen(argv[1]) != 3))
-    {
-        fprintf(stdout, ">> The input grid have to be with 1 digit per dimension, like: 2x3, 3x2, 2x8, 4x4, 8x2\n");
-        MPI_Abort(MPI_COMM_WORLD, 4);
-    }
 
     /** Grid **/
     ok = sscanf( argv[1], "%dx%d", &num_groups_x, &num_groups_y);
