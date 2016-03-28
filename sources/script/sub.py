@@ -214,7 +214,12 @@ def main():
     # command, ret_code, out, err = call_command("cd /home/user")
     # print(pretty_return(command, ret_code, out, err))
 
-    list_dir = [str(dir_) for dir_ in os.listdir(SOURCES)]
+    try:
+        list_dir = [str(dir_) for dir_ in os.listdir(SOURCES)]
+    except OSError as err:
+        print("Error: you have to configure the source folder inside sub.cfg")
+        sys.exit(-1)
+
     num_projects = [str(num) for num in range(len(list_dir))]
     projects = dict(
         zip(num_projects, sorted(list_dir)))
