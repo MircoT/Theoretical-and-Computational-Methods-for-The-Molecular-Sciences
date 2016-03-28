@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$1" == "setSource" ] 
+then
+	SOURCE_PATH=$2
+
+	if [ ${SOURCE_PATH:0:1} != "/" ]
+	then
+		SOURCE_PATH="$(cd "$(dirname "$2")"; pwd)/$(basename "$2")"
+	fi
+	
+	rm $HOME/bin/sub.cfg
+	touch $HOME/bin/sub.cfg
+	echo "[sub]" >> $HOME/bin/sub.cfg
+	echo "source_dir = $SOURCE_PATH" >> $HOME/bin/sub.cfg
+else
+	sub.py $@
+fi

@@ -10,9 +10,9 @@ import time
 import shutil
 import ConfigParser
 
-
+BIN_DIR = os.path.join(os.getenv("HOME"), 'bin')
 CONFIG = ConfigParser.ConfigParser()
-CONFIG.read('sub.cfg')
+CONFIG.read(os.path.join(BIN_DIR, 'sub.cfg'))
 SOURCES = CONFIG.get('sub', 'source_dir')
 
 
@@ -87,7 +87,7 @@ class Submit(Process):
                 Colors.WARNING + "- Make submit command" + Colors.ENDC, end=" -> ")
             sys.stdout.flush()
             try:
-                with open("sub_template.sh", "r") as template:
+                with open(os.path.join(BIN_DIR, "sub_template.sh"), "r") as template:
                     with open("cur_sub.sh", "w") as cur_sub:
                         cur_sub.write(
                             template.read()
@@ -177,7 +177,7 @@ class Submit(Process):
                     print(
                         Colors.HEADER + "!!! JOB successful aborted !!!" + Colors.ENDC)
                     return
-        
+
         print(Colors.OKGREEN +
               "-> CPU USED: {0} <-".format(self.cpu_time_used) + Colors.ENDC)
         print(Colors.OKGREEN + "------ End submit ------" +
@@ -224,12 +224,22 @@ def main():
     projects = dict(
         zip(num_projects, sorted(list_dir)))
 
-    parser = argparse.ArgumentParser(description='Launch an MPI project')
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="""Launch an MPI project
+
+    NOTE: if you want to chage the source directory or
+          you have to set it use:
+
+        $ git sub setSource /path/of/your/sources
+""")
+
     parser.add_argument('name', metavar='project', type=str,
                         help='the project name or number, use keyword getlist to see your projects',
                         choices=list_dir + [str("getList")] + num_projects)
     parser.add_argument(
-        'input_args', nargs=argparse.REMAINDER, metavar='args', default='')
+        'input_args', nargs=argparse.REMAINDER, metavar='args', default='',
+        help='input arguments for the project executable')
     parser.add_argument('-n', '--nodes', metavar='N', type=int,
                         help='number of nodes needed', nargs='?',
                         default=4)
@@ -239,13 +249,11 @@ def main():
 
     args = parser.parse_args()
 
-    cwd = os.getcwd()
-
     if args.name == "getList":
         print("Your projects are:")
         for num, project in enumerate(sorted(list_dir)):
             print("  {0}) {1}".format(num, project))
-    elif not all([num == args.name for num in num_projects]):
+    elif any([num == args.name for num in num_projects]):
         proc = Submit(
             projects[args.name], args.nodes, args.processes, args.input_args)
         os.system('clear')
